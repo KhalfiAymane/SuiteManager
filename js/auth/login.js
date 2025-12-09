@@ -2,7 +2,7 @@ export class AuthService {
   static login(email, password) {
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const user = users.find(u => u.email === email && u.password === password);
-
+    
     if (user) {
       const session = {
         email: user.email,

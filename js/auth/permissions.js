@@ -1,71 +1,100 @@
-import { AuthService } from './login.js';
-
 export class PermissionManager {
-  static init() {
-    if (!AuthService.isAuthenticated()) {
-      return;
+    static getSession() {
+        return JSON.parse(sessionStorage.getItem('session') || '{}');
     }
 
-    const role = AuthService.getRole();
-
-    if (role === 'user') {
-      this.hideAdminElements();
-      this.hideAdminPages();
-    }
-  }
-
-  static hideAdminElements() {
-    // Hide all elements with admin-only class
-    document.querySelectorAll('.admin-only').forEach(el => {
-      el.style.display = 'none';
-    });
-
-    // Hide specific charts
-    const adminCharts = ['revenue-chart', 'staff-chart'];
-    adminCharts.forEach(chartId => {
-      const chart = document.getElementById(chartId);
-      if (chart) {
-        chart.closest('.chart-container')?.remove();
-      }
-    });
-
-    // Hide revenue KPI
-    const revenueKPI = document.querySelector('[data-kpi="revenue"]');
-    if (revenueKPI) {
-      revenueKPI.remove();
-    }
-  }
-
-  static hideAdminPages() {
-    const currentPage = window.location.pathname.split('/').pop();
-    const adminPages = ['staff.html', 'services.html'];
-
-    if (adminPages.includes(currentPage)) {
-      window.location.href = '/dashboard.html';
+    static isAdmin() {
+        const session = this.getSession();
+        return session.role === 'admin';
     }
 
-    // Hide navigation links to admin pages
-    document.querySelectorAll('a[href="staff.html"], a[href="services.html"]').forEach(link => {
-      link.style.display = 'none';
-    });
-  }
+    static canCreate() {
+        return this.isAdmin();
+    }
 
-  static canEdit() {
-    return AuthService.isAdmin();
-  }
+    static canEdit() {
+        return this.isAdmin();
+    }
 
-  static canDelete() {
-    return AuthService.isAdmin();
-  }
+    static canDelete() {
+        return this.isAdmin();
+    }
 
-  static canCreate() {
-    return AuthService.isAdmin();
-  }
-}
+    static canView() {
+        return true; // Everyone can view
+    }
 
-// Auto-initialize on load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => PermissionManager.init());
-} else {
-  PermissionManager.init();
+    static init() {
+        if (!this.isAdmin()) {
+            // Hide all elements marked as admin-only
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Hide action buttons in tables (Edit/Delete)
+            this.hideCRUDButtons();
+        }
+    }
+
+    static hideCRUDButtons() {
+        // Wait for DOM to be fully loaded and table to be populated
+        setTimeout(() => {
+            // Remove Edit buttons
+            document.querySelectorAll('.action-btn.edit, button.edit, .edit-btn').forEach(btn => {
+                btn.style.display = 'none';
+            });
+
+            // Remove Delete buttons
+            document.querySelectorAll('.action-btn.delete, button.delete, .delete-btn').forEach(btn => {
+                btn.style.display = 'none';
+            });
+
+            // Check if Actions column is now empty and hide it if needed
+            document.querySelectorAll('table').forEach(table => {
+                const headerRow = table.querySelector('thead tr');
+                const headers = headerRow ? Array.from(headerRow.querySelectorAll('th')) : [];
+                
+                headers.forEach((th, index) => {
+                    if (th.textContent.trim().toLowerCase() === 'actions') {
+                        // Check if any row has visible content in this column
+                        const rows = table.querySelectorAll('tbody tr');
+                        let hasVisibleContent = false;
+
+                        rows.forEach(row => {
+                            const cell = row.children[index];
+                            if (cell) {
+                                const visibleButtons = Array.from(cell.querySelectorAll('button')).filter(
+                                    btn => btn.style.display !== 'none'
+                                );
+                                if (visibleButtons.length > 0) {
+                                    hasVisibleContent = true;
+                                }
+                            }
+                        });
+
+                        // If no visible content, hide the entire column
+                        if (!hasVisibleContent) {
+                            th.style.display = 'none';
+                            rows.forEach(row => {
+                                if (row.children[index]) {
+                                    row.children[index].style.display = 'none';
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }, 100);
+    }
+
+    static can(permission) {
+        return this.isAdmin();
+    }
+
+    // Call this method after dynamically loading table content
+    static refreshPermissions() {
+        if (!this.isAdmin()) {
+            this.hideCRUDButtons();
+        }
+    }
 }

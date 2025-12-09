@@ -8,7 +8,10 @@
   <link rel="stylesheet" href="assets/css/dark-mode.css">
   <link rel="stylesheet" href="assets/css/dashboard.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+  
+  <!-- jsPDF Libraries for PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
   <div class="dashboard-layout">
@@ -17,7 +20,7 @@
         <h2>Hotel Manager</h2>
       </div>
       
-            <nav class="nav-menu">
+      <nav class="nav-menu">
         <a href="dashboard.html" class="nav-link active">
           <span><img src="assets/icons/pie-chart.png" alt="Dashboard" class="sidebar-icon"></span>
           <span class="nav-text">Dashboard</span>
@@ -43,7 +46,6 @@
           <span class="nav-text">Services</span>
         </a>
       </nav>
-      
       
       <button class="logout-btn" id="logout-btn"><img src="assets/icons/door.png" alt="log out" class="sidebar-icon">Logout</button>
     </aside>
@@ -125,7 +127,7 @@
     document.getElementById('user-role').textContent = session.role;
     document.getElementById('user-avatar').textContent = session.name[0].toUpperCase();
 
-     // Theme toggle functionality
+    // Theme toggle functionality
     const themeToggle = document.getElementById('theme-toggle');
     const themeIcon = document.getElementById('theme-icon');
     
@@ -155,7 +157,6 @@
       }
     });
 
-
     document.getElementById('mobile-toggle').addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('active');
     });
@@ -172,7 +173,15 @@
       });
     });
 
+    // Initialize permissions
     PermissionManager.init();
+    
+    // Refresh permissions after table loads
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        PermissionManager.refreshPermissions();
+      }, 200);
+    });
   </script>
 </body>
 </html>

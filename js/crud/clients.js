@@ -36,8 +36,12 @@ export class ClientsManager {
     }
 
     const addBtn = document.getElementById('add-client-btn');
-    if (addBtn && PermissionManager.canCreate()) {
-      addBtn.addEventListener('click', () => this.showAddModal());
+    if (addBtn) {
+      addBtn.addEventListener('click', () => {
+        if (PermissionManager.canCreate()) {
+          this.showAddModal();
+        }
+      });
     }
 
     document.getElementById('export-csv')?.addEventListener('click', () => this.exportCSV());
@@ -92,6 +96,10 @@ export class ClientsManager {
   }
 
   showEditModal(clientId) {
+    if (!PermissionManager.canEdit()) {
+      return;
+    }
+
     const client = this.clients.find(c => c.id === clientId);
     if (!client) return;
 
@@ -151,6 +159,10 @@ export class ClientsManager {
   }
 
   deleteClient(clientId) {
+    if (!PermissionManager.canDelete()) {
+      return;
+    }
+
     modal.confirm(
       'Delete Client',
       'Are you sure you want to delete this client?',
@@ -219,6 +231,11 @@ export class ClientsManager {
         </td>
       </tr>
     `).join('');
+
+    // Refresh permissions after rendering
+    setTimeout(() => {
+      PermissionManager.refreshPermissions();
+    }, 50);
   }
 }
 
