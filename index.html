@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuiteManager - Login</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/dark-mode.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      padding: 3rem;
+      width: 100%;
+      max-width: 450px;
+      animation: slideUp 0.5s ease;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header h1 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+    }
+
+    .login-header p {
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+
+    .login-options {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      gap: 1rem;
+    }
+
+    .login-options select,
+    .login-options button {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .login-form .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .login-form input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(115, 175, 111, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background: #629959;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(115, 175, 111, 0.4);
+    }
+
+    .error-alert {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      display: none;
+      border: 1px solid #f5c6cb;
+    }
+
+    .demo-credentials {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: var(--bg-gray);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .demo-credentials h4 {
+      margin-bottom: 0.75rem;
+      color: var(--text-dark);
+      font-size: 14px;
+    }
+
+    .demo-credentials p {
+      margin: 0.25rem 0;
+      color: var(--text-light);
+    }
+
+    .demo-credentials strong {
+      color: var(--text-dark);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Dark mode adjustments */
+    body.dark .login-box {
+      background: #2d2d2d;
+    }
+
+    body.dark .login-header h1 {
+      color: var(--primary);
+    }
+
+    body.dark .login-options select,
+    body.dark .login-options button {
+      background: #1e1e1e;
+      color: #e0e0e0;
+      border-color: #404040;
+    }
+
+    body.dark .demo-credentials {
+      background: #1e1e1e;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-header">
+        <h1>SuiteManager</h1>
+        <p id="login-subtitle">Sign in to your account</p>
+      </div>
+
+      <div class="login-options">
+        <select id="language-select">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="ar">العربية</option>
+        </select>
+        <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+          <img src="assets/icons/night-mode.png" height="20px" width="20px" alt="Dark Mode" id="theme-icon" class="sidebar-icon">
+        </button>
+      </div>
+
+      <div id="error-alert" class="error-alert"></div>
+
+      <form class="login-form" id="login-form">
+        <div class="form-group">
+          <label for="email" id="email-label">Email Address</label>
+          <input type="email" id="email" name="email" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="password" id="password-label">Password</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="login-btn" id="login-btn">Sign In</button>
+      </form>
+
+      <div class="demo-credentials">
+        <h4>Demo Credentials:</h4>
+        <p><strong>Admin:</strong> admin@hotel.com / admin123</p>
+        <p><strong>User:</strong> user@hotel.com / user123</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { translations } from './js/utils/translations.js';
+    import { AuthService } from './js/auth/login.js';
+    import { storage } from './js/services/storage.js';
+
+    // Initialize storage (creates default users)
+    storage.initializeData();
+
+    // Check if already logged in
+    if (AuthService.isAuthenticated()) {
+      window.location.href = '/dashboard.html';
+    }
+
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+      themeIcon.src = 'assets/icons/sun.png';
+      themeIcon.alt = 'Light Mode';
+    } else {
+      themeIcon.src = 'assets/icons/night-mode.png';
+      themeIcon.alt = 'Dark Mode';
+    }
+
+    // Toggle theme
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      
+      // Update icon based on current theme
+      if (isDark) {
+        themeIcon.src = 'assets/icons/sun.png';
+        themeIcon.alt = 'Light Mode';
+      } else {
+        themeIcon.src = 'assets/icons/night-mode.png';
+        themeIcon.alt = 'Dark Mode';
+      }
+    });
+
+    // Language selector
+    const languageSelect = document.getElementById('language-select');
+    const currentLang = translations.getCurrentLanguage();
+    languageSelect.value = currentLang;
+
+    async function updateTranslations() {
+      await translations.loadLanguage(languageSelect.value);
+      
+      document.getElementById('login-title').textContent = translations.t('login.title');
+      document.getElementById('login-subtitle').textContent = translations.t('login.subtitle');
+      document.getElementById('email-label').textContent = translations.t('login.email');
+      document.getElementById('password-label').textContent = translations.t('login.password');
+      document.getElementById('login-btn').textContent = translations.t('login.loginBtn');
+    }
+
+    languageSelect.addEventListener('change', updateTranslations);
+    updateTranslations();
+
+    // Login form submission
+    const loginForm = document.getElementById('login-form');
+    const errorAlert = document.getElementById('error-alert');
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const result = AuthService.login(email, password);
+
+      if (result.success) {
+        window.location.href = '/dashboard.html';
+      } else {
+        errorAlert.textContent = translations.t('login.invalidCredentials');
+        errorAlert.style.display = 'block';
+        
+        setTimeout(() => {
+          errorAlert.style.display = 'none';
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rooms - SuiteManager</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/dark-mode.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>SuiteManager</h2>
+      </div>
+      
+            <nav class="nav-menu">
+        <a href="dashboard.html" class="nav-link active">
+          <span><img src="assets/icons/pie-chart.png" alt="Dashboard" class="sidebar-icon"></span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="rooms.html" class="nav-link">
+          <span><img src="assets/icons/double-bed.png" alt="Dashboard" class="sidebar-icon"></span>
+          <span class="nav-text">Rooms</span>
+        </a>
+        <a href="reservations.html" class="nav-link">
+          <span><img src="assets/icons/calendar.png" alt="Dashboard" class="sidebar-icon"></span>
+          <span class="nav-text">Reservations</span>
+        </a>
+        <a href="clients.html" class="nav-link">
+          <span><img src="assets/icons/group.png" alt="Dashboard" class="sidebar-icon"></span>
+          <span class="nav-text">Clients</span>
+        </a>
+        <a href="staff.html" class="nav-link admin-only">
+          <span><img src="assets/icons/staff.png" alt="Dashboard" class="sidebar-icon"></span>
+          <span class="nav-text">Staff</span>
+        </a>
+        <a href="services.html" class="nav-link admin-only">
+          <span><img src="assets/icons/hotel-bell.png" alt="Dashboard" class="sidebar-icon"></span>
+          <span class="nav-text">Services</span>
+        </a>
+      </nav>
+      
+      
+      <button class="logout-btn" id="logout-btn"><img src="assets/icons/door.png" alt="log out" class="sidebar-icon">Logout</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Navigation -->
+      <div class="top-nav">
+        <div class="top-nav-left">
+          <button class="mobile-toggle" id="mobile-toggle">☰</button>
+          <h1 id="page-title">Rooms Management</h1>
+        </div>
+        <div class="top-nav-right">
+          <select id="language-select">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="ar">العربية</option>
+          </select>
+          <button class="theme-toggle" id="theme-toggle">
+            <img src="assets/icons/night-mode.png" alt="Dark Mode" id="theme-icon" class="sidebar-icon">
+          </button>
+          <div class="user-info">
+            <div class="user-avatar" id="user-avatar">A</div>
+            <div class="user-details">
+              <span class="user-name" id="user-name">Admin User</span>
+              <span class="user-role" id="user-role">admin</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content-area">
+        <div class="table-container">
+          <div class="table-header">
+            <div class="search-box">
+              <input type="text" id="search-rooms" placeholder="Search rooms...">
+            </div>
+            
+            <div class="filter-group">
+              <select id="type-filter">
+                <option value="all">All Types</option>
+                <option value="single">Single</option>
+                <option value="double">Double</option>
+                <option value="suite">Suite</option>
+                <option value="deluxe">Deluxe</option>
+              </select>
+            </div>
+
+            <div class="table-actions">
+              <button class="btn btn-primary admin-only" id="add-room-btn">
+                <i class="fa-solid fa-plus"></i>  Add Room
+              </button>
+              <button class="btn btn-outline" id="export-csv">
+                📄 Export CSV
+              </button>
+              <button class="btn btn-outline" id="export-pdf">
+                📑 Export PDF
+              </button>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Room Number</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rooms-tbody">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { AuthService } from './js/auth/login.js';
+    import { PermissionManager } from './js/auth/permissions.js';
+    import { translations } from './js/utils/translations.js';
+    import './js/crud/rooms.js';
+
+    AuthService.checkAuth();
+
+    const session = AuthService.getSession();
+    document.getElementById('user-name').textContent = session.name;
+    document.getElementById('user-role').textContent = session.role;
+    document.getElementById('user-avatar').textContent = session.name[0].toUpperCase();
+
+     // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+      themeIcon.src = 'assets/icons/sun.png';
+      themeIcon.alt = 'Light Mode';
+    } else {
+      themeIcon.src = 'assets/icons/night-mode.png';
+      themeIcon.alt = 'Dark Mode';
+    }
+
+    // Toggle theme
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      
+      // Update icon based on current theme
+      if (isDark) {
+        themeIcon.src = 'assets/icons/sun.png';
+        themeIcon.alt = 'Light Mode';
+      } else {
+        themeIcon.src = 'assets/icons/night-mode.png';
+        themeIcon.alt = 'Dark Mode';
+      }
+    });
+
+    document.getElementById('mobile-toggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('active');
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      AuthService.logout();
+    });
+
+    // Language
+    const languageSelect = document.getElementById('language-select');
+    languageSelect.value = translations.getCurrentLanguage();
+    languageSelect.addEventListener('change', () => {
+      translations.loadLanguage(languageSelect.value).then(() => {
+        location.reload();
+      });
+    });
+
+    PermissionManager.init();
+  </script>
+</body>
+</html>
