@@ -5,8 +5,8 @@ export const storage = {
         if (!localStorage.getItem('initialized')) {
             const defaultData = {
                 clients: [
-                    { id: '1', name: 'John Doe', email: 'john@example.com', phone: '+1234567890', nationality: 'US', stays: 3, createdAt: new Date().toISOString() },
-                    { id: '2', name: 'Jane Smith', email: 'jane@example.com', phone: '+1234567891', nationality: 'UK', stays: 1, createdAt: new Date().toISOString() }
+                    { id: '1', name: 'Ahmed', email: 'ahmed@example.com', phone: '+1234567890', nationality: 'US', stays: 3, createdAt: new Date().toISOString() },
+                    { id: '2', name: 'malika', email: 'malika@example.com', phone: '+1234567891', nationality: 'UK', stays: 1, createdAt: new Date().toISOString() }
                 ],
                 rooms: [
                     { id: '101', number: '101', type: 'single', price: 100, status: 'available', createdAt: new Date().toISOString() },
@@ -42,9 +42,9 @@ export const storage = {
                     { id: '3', name: 'Laundry', description: 'Dry cleaning service', price: 15, createdAt: new Date().toISOString() }
                 ],
                 staff: [
-                    { id: '1', name: 'Robert Johnson', role: 'Manager', salary: 5000, shift: 'Day', createdAt: new Date().toISOString() },
-                    { id: '2', name: 'Sarah Williams', role: 'Receptionist', salary: 2500, shift: 'Night', createdAt: new Date().toISOString() },
-                    { id: '3', name: 'Mike Brown', role: 'Housekeeping', salary: 2000, shift: 'Day', createdAt: new Date().toISOString() }
+                    { id: '1', name: 'mohammed', role: 'Manager', salary: 5000, shift: 'Day', createdAt: new Date().toISOString() },
+                    { id: '2', name: 'sara', role: 'Receptionist', salary: 2500, shift: 'Night', createdAt: new Date().toISOString() },
+                    { id: '3', name: 'yassine', role: 'Housekeeping', salary: 2000, shift: 'Day', createdAt: new Date().toISOString() }
                 ],
                 users: [
                     { id: '1', email: 'admin@hotel.com', password: 'admin123', name: 'Admin User', role: 'admin' },
